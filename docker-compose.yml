@@ -1,0 +1,30 @@
+name: devops-heroes
+
+volumes:
+  gitlab-data: {}
+  gitlab-config: {}
+  gitlab-logs: {}
+
+services:
+  gitlab-server:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab-server
+    volumes:
+      - gitlab-data:/var/opt/gitlab
+      - gitlab-config:/etc/gitlab
+      - gitlab-logs:/var/log/gitlab
+    ports:
+      - "2222:22"
+      - "8080:80"
+      - "15443:443"
+    restart: unless-stopped
+
+  gitlab-runner-1:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner-1
+    restart: unless-stopped
+    volumes:
+      - ./runner-config.toml:/etc/gitlab-runner/config.toml
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=Europe/Rome
