@@ -29,7 +29,7 @@
 ##! On AWS EC2 instances, we also attempt to fetch the public hostname/IP
 ##! address from AWS. For more details, see:
 ##! https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
-# external_url 'GENERATED_EXTERNAL_URL'
+external_url 'http://gitlab.devops-heroes.com/'
 
 ## Roles for multi-instance GitLab
 ##! The default is to have no roles enabled, which results in GitLab running as an all-in-one instance.
@@ -737,7 +737,7 @@
 #### Change the initial default admin password and shared runner registration tokens.
 ####! **Only applicable on initial setup, changing these settings after database
 ####!   is created and seeded won't yield any change.**
-# gitlab_rails['initial_root_password'] = "password"
+gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_password').gsub("\n", "")
 # gitlab_rails['initial_shared_runners_registration_token'] = "token"
 
 #### Toggle if root password should be printed to STDOUT during initialization
@@ -1704,9 +1704,9 @@
 ##! Docs: https://docs.gitlab.com/omnibus/settings/nginx.html
 ################################################################################
 
-# nginx['enable'] = true
+nginx['enable'] = true
 # nginx['client_max_body_size'] = '250m'
-# nginx['redirect_http_to_https'] = false
+nginx['redirect_http_to_https'] = false
 # nginx['redirect_http_to_https_port'] = 80
 
 ##! Most root CA's are included by default

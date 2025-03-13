@@ -2,29 +2,43 @@ name: devops-heroes
 
 volumes:
   gitlab-data: {}
-  gitlab-config: {}
   gitlab-logs: {}
 
+secrets:
+  gitlab_root_password:
+    file: ./volumes/gitlab/config/root_password.txt
+
+networks:
+  gitlab:
+    driver: bridge
+
 services:
-  gitlab-server:
+  gitlab:
     image: gitlab/gitlab-ce:latest
-    container_name: gitlab-server
+    container_name: gitlab
     volumes:
       - gitlab-data:/var/opt/gitlab
-      - gitlab-config:/etc/gitlab
       - gitlab-logs:/var/log/gitlab
+      - ./volumes/gitlab/config/gitlab.rb:/etc/gitlab/gitlab.rb
+    hostname: gitlab.devops-heroes.com
     ports:
-      - "2222:22"
-      - "8080:80"
-      - "15443:443"
+      - "22:22"
+      - "80:80"
+      - "443:443"
+    secrets:
+      - gitlab_root_password
+    networks:
+      - gitlab
     restart: unless-stopped
 
   gitlab-runner-1:
     image: gitlab/gitlab-runner:latest
     container_name: gitlab-runner-1
-    restart: unless-stopped
     volumes:
-      - ./runner-config.toml:/etc/gitlab-runner/config.toml
+      - ./volumes/gitlab-runner/config/runner-config.toml:/etc/gitlab-runner/config.toml
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - gitlab
     environment:
       - TZ=Europe/Rome
+    restart: unless-stopped
