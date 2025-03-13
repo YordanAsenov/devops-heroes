@@ -107,9 +107,11 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
     ### Runner Setup Steps
     Once on the "New Runner" page:
     > Leave the "Tags" field empty
+
     > Enable "Run untagged jobs"
 
     Then:
+
     > Click "Create runner"
 
     > Copy the command provided in Step 1 and paste it into the Exec tab of the GitLab Runner container in Docker Desktop (or execute it via Docker CLI).
@@ -119,12 +121,14 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
     > Enter a name for your runner
 
     > Select an executor. If you plan to use the runner for DIND (Docker-in-Docker), choose "docker".
-    
+
     > Select the default Docker image. If using DIND, choose "docker"
 
    **Note**: If you choose to use DIND, update the "volumes" configuration in `./volumes/gitlab-runner/config/runner-config.toml` with the following:
 
-    `volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]`
+    ```
+    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+    ```
 
 ## Current limitations
 
