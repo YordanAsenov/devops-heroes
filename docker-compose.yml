@@ -20,15 +20,18 @@ services:
       - gitlab-data:/var/opt/gitlab
       - gitlab-logs:/var/log/gitlab
       - ./volumes/gitlab/config/gitlab.rb:/etc/gitlab/gitlab.rb
-    hostname: gitlab.devops-heroes.com
     ports:
+      - "39000:80"
       - "22:22"
-      - "80:80"
       - "443:443"
     secrets:
       - gitlab_root_password
     networks:
       - gitlab
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gitlab.rule=Host(`gitlab.devops-heroes.com`)"
+      - "traefik.http.services.gitlab.loadbalancer.server.port=80"
     restart: unless-stopped
 
   gitlab-runner-1:
@@ -41,4 +44,18 @@ services:
       - gitlab
     environment:
       - TZ=Europe/Rome
+    labels:
+      - "traefik.enable=false"
+    restart: unless-stopped
+
+  reverse-proxy:
+    image: traefik
+    command: --api.insecure=true --providers.docker --providers.docker.exposedByDefault=true
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - gitlab
     restart: unless-stopped
