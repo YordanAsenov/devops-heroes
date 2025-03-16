@@ -13,6 +13,15 @@ networks:
     driver: bridge
 
 services:
+  certificate_authority:
+    image: alpine/openssl
+    container_name: certificate_authority
+    volumes:
+      - ./volumes/certificate_authority/data:/ca
+      - ./volumes/certificate_authority/config/openssl.cnf:/etc/ssl/openssl.cnf
+      - ./volumes/certificate_authority/script/generate_certs.sh:/generate_certs.sh
+    entrypoint: "/generate_certs.sh"
+
   gitlab:
     image: gitlab/gitlab-ce:latest
     container_name: gitlab
@@ -32,6 +41,9 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.gitlab.rule=Host(`gitlab.devops-heroes.com`)"
       - "traefik.http.services.gitlab.loadbalancer.server.port=80"
+    depends_on:
+      certificate_authority:
+        condition: service_completed_successfully
     restart: unless-stopped
 
   gitlab-runner-1:
@@ -46,10 +58,14 @@ services:
       - TZ=Europe/Rome
     labels:
       - "traefik.enable=false"
+    depends_on:
+      gitlab:
+        condition: service_healthy
     restart: unless-stopped
 
   reverse-proxy:
     image: traefik
+    container_name: reverse-proxy
     command: --api.insecure=true --providers.docker --providers.docker.exposedByDefault=true
     ports:
       - "80:80"
@@ -58,4 +74,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - gitlab
+    depends_on:
+      certificate_authority:
+        condition: service_completed_successfully
     restart: unless-stopped

@@ -30,7 +30,7 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
     
     > docker-compose up -d --force-recreate --remove-orphans
 
-## Setup & Administration
+## Gitlab Setup & Administration
 
 1. Log in
 
