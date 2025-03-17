@@ -33,7 +33,7 @@ openssl req \
   -days $DAYS_VALID \
   -key "$CA_KEY" \
   -out "$CA_CRT" \
-  -config /etc/ssl/openssl.cnf
+  -config /etc/ssl/openssl.cnf \
   -extensions v3_ca
 
 sleep 1
@@ -86,5 +86,5 @@ openssl x509 \
 
 sleep 1
 
-echo "Certificati generati in $CERTS_DIR:"
+echo "Certificates generated in $CERTS_DIR:"
 ls -l "$CERTS_DIR"

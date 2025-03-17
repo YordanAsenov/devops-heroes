@@ -29,6 +29,9 @@ services:
       - gitlab-data:/var/opt/gitlab
       - gitlab-logs:/var/log/gitlab
       - ./volumes/gitlab/config/gitlab.rb:/etc/gitlab/gitlab.rb
+      - ./volumes/certificate_authority/data/certs/ca.crt:/etc/gitlab/trusted-certs/ca.crt
+      - ./volumes/certificate_authority/data/certs/gitlab.devops-heroes.com.crt:/etc/gitlab/ssl/gitlab.devops-heroes.com.crt
+      - ./volumes/certificate_authority/data/private/gitlab.devops-heroes.com.key:/etc/gitlab/ssl/gitlab.devops-heroes.com.key
     ports:
       - "39000:80"
       - "22:22"
@@ -52,6 +55,7 @@ services:
     volumes:
       - ./volumes/gitlab-runner/config/runner-config.toml:/etc/gitlab-runner/config.toml
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./volumes/certificate_authority/data/certs/ca.crt:/etc/gitlab-runner/certs/ca.crt:ro
     networks:
       - gitlab
     environment:
