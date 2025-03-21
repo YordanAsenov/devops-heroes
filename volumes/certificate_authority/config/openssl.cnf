@@ -1,0 +1,42 @@
+################################################
+# certificate authority
+################################################
+[ req ]
+default_bits        = 2048
+prompt              = no
+default_md          = sha256
+distinguished_name  = req_distinguished_name
+req_extensions      = v3_ca
+
+[ req_distinguished_name ]
+C  = IT
+ST = Lombardia
+L  = Milano
+O  = DevOps Heroes
+OU = Security Team
+CN = devops-heroes.com
+
+[ v3_ca ]
+basicConstraints = critical,CA:TRUE
+keyUsage = critical, keyCertSign, cRLSign
+subjectKeyIdentifier = hash
+
+################################################
+# gitlab
+################################################
+[ v3_gitlab ]
+subjectAltName = @gitlab_alt_names
+
+[ gitlab_alt_names ]
+DNS.1 = gitlab.devops-heroes.com
+DNS.2 = www.gitlab.devops-heroes.com
+
+################################################
+# registry
+################################################
+[ v3_registry ]
+subjectAltName = @registry_alt_names
+
+[ registry_alt_names ]
+DNS.1 = registry.devops-heroes.com
+DNS.2 = www.registry.devops-heroes.com

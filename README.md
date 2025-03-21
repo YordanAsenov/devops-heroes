@@ -30,7 +30,7 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
     
     > docker-compose up -d --force-recreate --remove-orphans
 
-## Setup & Administration
+## Gitlab Setup & Administration
 
 1. Log in
 
@@ -44,7 +44,7 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
 
     After logging in, it's recommended to create a new administrator user.
 
-    > Go to http://gitlab.devops-heroes.com/admin/users.
+    > Go to https://gitlab.devops-heroes.com/admin/users.
 
     > Click "New User" and fill in the details.
 
@@ -54,7 +54,7 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
 
 3. Create a new project group
 
-    > Go to http://gitlab.devops-heroes.com/groups/new
+    > Go to https://gitlab.devops-heroes.com/groups/new
 
     > Click "Create group"
 
@@ -64,7 +64,7 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
 
 4. Create a new project
 
-    > Go to http://gitlab.devops-heroes.com/projects/new
+    > Go to https://gitlab.devops-heroes.com/projects/new
 
     > Click "Create blank project"
 
@@ -78,13 +78,13 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
 
     1. Create a Global instance runner:
     
-        > Go to http://gitlab.devops-heroes.com/admin/runners
+        > Go to https://gitlab.devops-heroes.com/admin/runners
 
         > Click "New instance runner"
 
     2. Create a Group instance runner:
 
-        > Go to http://gitlab.devops-heroes.com/dashboard/groups
+        > Go to https://gitlab.devops-heroes.com/dashboard/groups
 
         > Select your project group
 
@@ -124,10 +124,15 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
 
     > Select the default Docker image. If using DIND, choose "docker"
 
-   **Note**: If you choose to use DIND, update the "volumes" configuration in `./volumes/gitlab-runner/config/runner-config.toml` with the following:
+   **Note**: If you choose to use DIND, update the "network_mode" and the "volumes" configuration in `./volumes/gitlab-runner/config/runner-config.toml` with the following:
 
     ```
-    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+    network_mode = "devops-heroes_gitlab"
+    volumes = [
+        "/var/run/docker.sock:/var/run/docker.sock", 
+        "/cache",
+        "/etc/gitlab-runner/certs"
+    ]
     ```
 
 ## Current limitations

@@ -2,7 +2,13 @@ name: devops-heroes
 
 volumes:
   gitlab-data: {}
+  gitlab-config: {}
   gitlab-logs: {}
+  gitlab-runner-config: {}
+  gitlab-runner-home: {}
+  private-keys: {}
+  sign-requests: {}
+  certificates: {}
 
 secrets:
   gitlab_root_password:
@@ -13,13 +19,28 @@ networks:
     driver: bridge
 
 services:
+  certificate_authority:
+    image: alpine/openssl
+    container_name: certificate_authority
+    volumes:
+      - private-keys:/ca/private
+      - sign-requests:/ca/csr
+      - certificates:/ca/certs
+      - ./volumes/certificate_authority/config/openssl.cnf:/etc/ssl/openssl.cnf
+      - ./volumes/certificate_authority/script/generate_certs.sh:/generate_certs.sh
+    entrypoint: "/generate_certs.sh"
+
   gitlab:
     image: gitlab/gitlab-ce:latest
     container_name: gitlab
     volumes:
       - gitlab-data:/var/opt/gitlab
       - gitlab-logs:/var/log/gitlab
+      - gitlab-config:/etc/gitlab
       - ./volumes/gitlab/config/gitlab.rb:/etc/gitlab/gitlab.rb
+      - certificates:/etc/gitlab/trusted-certs
+      - certificates:/etc/gitlab/ssl/certificates
+      - private-keys:/etc/gitlab/ssl/private
     ports:
       - "39000:80"
       - "22:22"
@@ -27,11 +48,16 @@ services:
     secrets:
       - gitlab_root_password
     networks:
-      - gitlab
+      gitlab:
+        aliases:
+          - "gitlab.devops-heroes.com"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gitlab.rule=Host(`gitlab.devops-heroes.com`)"
       - "traefik.http.services.gitlab.loadbalancer.server.port=80"
+    depends_on:
+      certificate_authority:
+        condition: service_completed_successfully
     restart: unless-stopped
 
   gitlab-runner-1:
@@ -40,22 +66,34 @@ services:
     volumes:
       - ./volumes/gitlab-runner/config/runner-config.toml:/etc/gitlab-runner/config.toml
       - /var/run/docker.sock:/var/run/docker.sock
+      - certificates:/etc/gitlab-runner/certs:ro
+      - gitlab-runner-config:/etc/gitlab-runner
+      - gitlab-runner-home:/home/gitlab-runner
     networks:
       - gitlab
     environment:
       - TZ=Europe/Rome
     labels:
       - "traefik.enable=false"
+    depends_on:
+      gitlab:
+        condition: service_healthy
     restart: unless-stopped
 
   reverse-proxy:
     image: traefik
-    command: --api.insecure=true --providers.docker --providers.docker.exposedByDefault=true
+    container_name: reverse-proxy
     ports:
       - "80:80"
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./volumes/traefik/config/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - private-keys:/etc/traefik/private:ro
+      - certificates:/etc/traefik/certs:ro
     networks:
       - gitlab
+    depends_on:
+      certificate_authority:
+        condition: service_completed_successfully
     restart: unless-stopped
