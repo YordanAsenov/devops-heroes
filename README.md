@@ -124,10 +124,15 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
 
     > Select the default Docker image. If using DIND, choose "docker"
 
-   **Note**: If you choose to use DIND, update the "volumes" configuration in `./volumes/gitlab-runner/config/runner-config.toml` with the following:
+   **Note**: If you choose to use DIND, update the "network_mode" and the "volumes" configuration in `./volumes/gitlab-runner/config/runner-config.toml` with the following:
 
     ```
-    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+    network_mode = "devops-heroes_gitlab"
+    volumes = [
+        "/var/run/docker.sock:/var/run/docker.sock", 
+        "/cache",
+        "/etc/gitlab-runner/certs"
+    ]
     ```
 
 ## Current limitations

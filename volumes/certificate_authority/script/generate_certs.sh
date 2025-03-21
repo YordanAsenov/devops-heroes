@@ -21,6 +21,12 @@ REGISTRY_CERT_KEY="$PRIVATE_DIR/$REGISTRY_DOMAIN_NAME.key"
 REGISTRY_CERT_CSR="$CSR_DIR/$REGISTRY_DOMAIN_NAME.csr"
 REGISTRY_CERT_CRT="$CERTS_DIR/$REGISTRY_DOMAIN_NAME.crt"
 
+# Check if certificates already exist
+if [ -f "$GITLAB_CERT_CRT" ] && [ -f "$REGISTRY_CERT_CRT" ]; then
+  echo "Certificates already exist. Exiting."
+  exit 0
+fi
+
 echo "Create the necessary directories"
 mkdir -p $PRIVATE_DIR $CSR_DIR $CERTS_DIR
 

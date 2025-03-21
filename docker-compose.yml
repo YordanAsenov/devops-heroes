@@ -48,7 +48,9 @@ services:
     secrets:
       - gitlab_root_password
     networks:
-      - gitlab
+      gitlab:
+        aliases:
+          - "gitlab.devops-heroes.com"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gitlab.rule=Host(`gitlab.devops-heroes.com`)"
