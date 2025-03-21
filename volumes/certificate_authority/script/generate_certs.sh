@@ -1,7 +1,6 @@
 #!/bin/sh
 echo "Set the variables"
 CONFIG_FILE="/etc/ssl/openssl.cnf"
-PASS_PHRASE="tua_passphrase"
 DAYS_VALID=365
 CA_DIR="/ca"
 PRIVATE_DIR="$CA_DIR/private"
