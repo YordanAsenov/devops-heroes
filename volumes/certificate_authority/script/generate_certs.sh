@@ -63,7 +63,7 @@ openssl x509 \
 sleep 1
 
 # --- Create the Registry certificate ---
-echo "Generate the private key and the CSR for Gitlab"
+echo "Generate the private key and the CSR for Registry"
 openssl genrsa -out "$REGISTRY_CERT_KEY" 4096
 openssl req \
   -new \
@@ -72,7 +72,7 @@ openssl req \
   -config /etc/ssl/openssl.cnf \
   -subj "/CN=$REGISTRY_DOMAIN_NAME"
 
-echo "Sign the Gitlab certificate with the CA"
+echo "Sign the Registry certificate with the CA"
 openssl x509 \
   -req \
   -days $DAYS_VALID \

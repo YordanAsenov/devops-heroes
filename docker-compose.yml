@@ -2,7 +2,13 @@ name: devops-heroes
 
 volumes:
   gitlab-data: {}
+  gitlab-config: {}
   gitlab-logs: {}
+  gitlab-runner-config: {}
+  gitlab-runner-home: {}
+  private-keys: {}
+  sign-requests: {}
+  certificates: {}
 
 secrets:
   gitlab_root_password:
@@ -17,7 +23,9 @@ services:
     image: alpine/openssl
     container_name: certificate_authority
     volumes:
-      - ./volumes/certificate_authority/data:/ca
+      - private-keys:/ca/private
+      - sign-requests:/ca/csr
+      - certificates:/ca/certs
       - ./volumes/certificate_authority/config/openssl.cnf:/etc/ssl/openssl.cnf
       - ./volumes/certificate_authority/script/generate_certs.sh:/generate_certs.sh
     entrypoint: "/generate_certs.sh"
@@ -28,10 +36,11 @@ services:
     volumes:
       - gitlab-data:/var/opt/gitlab
       - gitlab-logs:/var/log/gitlab
+      - gitlab-config:/etc/gitlab
       - ./volumes/gitlab/config/gitlab.rb:/etc/gitlab/gitlab.rb
-      - ./volumes/certificate_authority/data/certs/ca.crt:/etc/gitlab/trusted-certs/ca.crt
-      - ./volumes/certificate_authority/data/certs/gitlab.devops-heroes.com.crt:/etc/gitlab/ssl/gitlab.devops-heroes.com.crt
-      - ./volumes/certificate_authority/data/private/gitlab.devops-heroes.com.key:/etc/gitlab/ssl/gitlab.devops-heroes.com.key
+      - certificates:/etc/gitlab/trusted-certs
+      - certificates:/etc/gitlab/ssl/certificates
+      - private-keys:/etc/gitlab/ssl/private
     ports:
       - "39000:80"
       - "22:22"
@@ -55,7 +64,9 @@ services:
     volumes:
       - ./volumes/gitlab-runner/config/runner-config.toml:/etc/gitlab-runner/config.toml
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./volumes/certificate_authority/data/certs/ca.crt:/etc/gitlab-runner/certs/ca.crt:ro
+      - certificates:/etc/gitlab-runner/certs:ro
+      - gitlab-runner-config:/etc/gitlab-runner
+      - gitlab-runner-home:/home/gitlab-runner
     networks:
       - gitlab
     environment:
@@ -70,12 +81,14 @@ services:
   reverse-proxy:
     image: traefik
     container_name: reverse-proxy
-    command: --api.insecure=true --providers.docker --providers.docker.exposedByDefault=true
     ports:
       - "80:80"
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./volumes/traefik/config/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - private-keys:/etc/traefik/private:ro
+      - certificates:/etc/traefik/certs:ro
     networks:
       - gitlab
     depends_on:
