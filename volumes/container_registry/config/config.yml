@@ -1,0 +1,42 @@
+version: 0.1
+
+log:
+  level: info
+  formatter: text
+  fields:
+    service: container_registry
+    environment: production
+
+storage:
+  filesystem:
+    rootdirectory: /var/lib/registry
+  delete:
+    enabled: true
+
+http:
+  addr: :5000
+  headers:
+    X-Content-Type-Options: [nosniff]
+  # The HTTP secret will be provided via REGISTRY_HTTP_SECRET environment variable
+
+health:
+  storagedriver:
+    enabled: true
+    interval: 60s
+    threshold: 3
+
+auth:
+  token:
+    realm: https://gitlab.devops-heroes.com/jwt/auth
+    service: container_registry
+    issuer: gitlab-issuer
+    rootcertbundle: /certs/gitlab.devops-heroes.com.crt
+
+notifications:
+  endpoints:
+    - name: gitlab
+      url: https://gitlab.devops-heroes.com/api/v4/container_registry/notifications
+      timeout: 500ms
+      threshold: 5
+      backoff: 1s
+      # Headers will be set via REGISTRY_NOTIFICATIONS_ENDPOINTS_0_HEADERS environment variable
