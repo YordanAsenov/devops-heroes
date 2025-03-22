@@ -111,7 +111,7 @@ services:
       - container-registry-data:/var/lib/registry
       - certificates:/certs
       - ./volumes/container_registry/config/config.yml:/etc/docker/registry/config.yml:ro
-      - ./volumes/container_registry/env/entrypoint.sh:/custom-entrypoint.sh
+      - ./volumes/container_registry/script/boot.sh:/boot.sh
     secrets:
       - registry_notification_secret
     networks:
@@ -122,7 +122,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.registry.rule=Host(`registry.devops-heroes.com`)"
       - "traefik.http.services.registry.loadbalancer.server.port=5000"
-    entrypoint: ["/bin/sh", "/custom-entrypoint.sh"]
+    entrypoint: ["/bin/sh", "/boot.sh"]
     depends_on:
       certificate_authority:
         condition: service_completed_successfully
