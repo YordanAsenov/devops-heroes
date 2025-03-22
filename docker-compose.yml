@@ -9,10 +9,13 @@ volumes:
   private-keys: {}
   sign-requests: {}
   certificates: {}
+  container-registry-data: {}
 
 secrets:
   gitlab_root_password:
     file: ./volumes/gitlab/secrets/root_password.txt
+  registry_notification_secret:
+    file: ./volumes/container_registry/secrets/notification_secret.txt
 
 networks:
   gitlab:
@@ -47,6 +50,7 @@ services:
       - "443:443"
     secrets:
       - gitlab_root_password
+      - registry_notification_secret
     networks:
       gitlab:
         aliases:
@@ -93,6 +97,32 @@ services:
       - certificates:/etc/traefik/certs:ro
     networks:
       - gitlab
+    depends_on:
+      certificate_authority:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  container_registry:
+    image: registry:latest
+    container_name: container_registry
+    ports:
+    - "5000:5000"
+    volumes:
+      - container-registry-data:/var/lib/registry
+      - certificates:/certs
+      - ./volumes/container_registry/config/config.yml:/etc/docker/registry/config.yml:ro
+      - ./volumes/container_registry/env/entrypoint.sh:/custom-entrypoint.sh
+    secrets:
+      - registry_notification_secret
+    networks:
+      gitlab:
+        aliases:
+          - "registry.devops-heroes.com"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.registry.rule=Host(`registry.devops-heroes.com`)"
+      - "traefik.http.services.registry.loadbalancer.server.port=5000"
+    entrypoint: ["/bin/sh", "/custom-entrypoint.sh"]
     depends_on:
       certificate_authority:
         condition: service_completed_successfully

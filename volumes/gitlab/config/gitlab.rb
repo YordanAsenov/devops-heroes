@@ -967,27 +967,27 @@ gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_pass
 ##! Docs: https://docs.gitlab.com/ee/administration/packages/container_registry.html
 ################################################################################
 
-# registry_external_url 'https://registry.example.com'
+# registry_external_url 'https://registry.devops-heroes.com'
 
 ### Settings used by GitLab application
 # gitlab_rails['registry_enabled'] = true
-# gitlab_rails['registry_host'] = "registry.gitlab.example.com"
-# gitlab_rails['registry_port'] = "5005"
+# gitlab_rails['registry_host'] = "registry.devops-heroes.com"
+# gitlab_rails['registry_port'] = "5000"
 # gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
 
 # Notification secret, it's used to authenticate notification requests to GitLab application
 # You only need to change this when you use external Registry service, otherwise
 # it will be taken directly from notification settings of your Registry
-# gitlab_rails['registry_notification_secret'] = nil
+# gitlab_rails['registry_notification_secret'] = File.read('/run/secrets/registry_notification_secret').gsub("\n", "")
 
 ###! **Do not change the following 3 settings unless you know what you are
 ###!   doing**
-# gitlab_rails['registry_api_url'] = "http://127.0.0.1:5000"
-# gitlab_rails['registry_key_path'] = "/var/opt/gitlab/gitlab-rails/certificate.key"
-# gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
+# gitlab_rails['registry_api_url'] = "https://registry.devops-heroes.com"
+# gitlab_rails['registry_key_path'] = "/etc/gitlab/ssl/private/gitlab.devops-heroes.com.key"
+# gitlab_rails['registry_issuer'] = "gitlab-issuer"
 
 ### Settings used by Registry application
-# registry['enable'] = true
+registry['enable'] = false
 # registry['username'] = "registry"
 # registry['group'] = "registry"
 # registry['uid'] = nil
