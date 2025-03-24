@@ -12,7 +12,7 @@ volumes:
 
 secrets:
   gitlab_root_password:
-    file: ./volumes/gitlab/config/root_password.txt
+    file: ./volumes/gitlab/secrets/root_password.txt
 
 networks:
   gitlab:
@@ -20,7 +20,7 @@ networks:
 
 services:
   certificate_authority:
-    image: alpine/openssl
+    image: alpine/openssl:3.3.3
     container_name: certificate_authority
     volumes:
       - private-keys:/ca/private
@@ -31,7 +31,7 @@ services:
     entrypoint: "/generate_certs.sh"
 
   gitlab:
-    image: gitlab/gitlab-ce:latest
+    image: gitlab/gitlab-ce:17.10.0-ce.0
     container_name: gitlab
     volumes:
       - gitlab-data:/var/opt/gitlab
@@ -61,7 +61,7 @@ services:
     restart: unless-stopped
 
   gitlab-runner-1:
-    image: gitlab/gitlab-runner:latest
+    image: gitlab/gitlab-runner:v17.10.0
     container_name: gitlab-runner-1
     volumes:
       - ./volumes/gitlab-runner/config/runner-config.toml:/etc/gitlab-runner/config.toml
@@ -81,7 +81,7 @@ services:
     restart: unless-stopped
 
   reverse-proxy:
-    image: traefik
+    image: traefik:v3.3.4
     container_name: reverse-proxy
     ports:
       - "80:80"

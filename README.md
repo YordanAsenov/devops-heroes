@@ -30,6 +30,8 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
     
     > docker-compose up -d --force-recreate --remove-orphans
 
+4. Once the job "certificate_authority" is completed, retrieve the "ca.crt" from its volume and install it in the trusted certificate authorities of your personal computer.
+
 ## Gitlab Setup & Administration
 
 1. Log in
@@ -127,6 +129,7 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
    **Note**: If you choose to use DIND, update the "network_mode" and the "volumes" configuration in `./volumes/gitlab-runner/config/runner-config.toml` with the following:
 
     ```
+    tls_verify = true
     network_mode = "devops-heroes_gitlab"
     volumes = [
         "/var/run/docker.sock:/var/run/docker.sock", 
@@ -134,7 +137,3 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
         "/etc/gitlab-runner/certs"
     ]
     ```
-
-## Current limitations
-
-- Everything runs over HTTP (no HTTPS).
