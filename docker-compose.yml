@@ -103,10 +103,8 @@ services:
     restart: unless-stopped
 
   container_registry:
-    image: registry:latest
+    image: registry:2.8.3
     container_name: container_registry
-    ports:
-    - "5000:5000"
     volumes:
       - container-registry-data:/var/lib/registry
       - certificates:/certs
@@ -122,6 +120,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.registry.rule=Host(`registry.devops-heroes.com`)"
       - "traefik.http.services.registry.loadbalancer.server.port=5000"
+      - "traefik.http.routers.registry.tls=true"
+      - "traefik.http.routers.registry.tls.certresolver=default"
     entrypoint: ["/bin/sh", "/boot.sh"]
     depends_on:
       certificate_authority:

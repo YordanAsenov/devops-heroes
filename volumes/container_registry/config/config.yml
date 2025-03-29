@@ -30,7 +30,7 @@ auth:
     realm: https://gitlab.devops-heroes.com/jwt/auth
     service: container_registry
     issuer: gitlab-issuer
-    rootcertbundle: /certs/gitlab.devops-heroes.com.crt
+    rootcertbundle: /certs/registry.devops-heroes.com.full-chain.crt
 
 notifications:
   endpoints:
@@ -39,4 +39,3 @@ notifications:
       timeout: 500ms
       threshold: 5
       backoff: 1s
-      # Headers will be set via REGISTRY_NOTIFICATIONS_ENDPOINTS_0_HEADERS environment variable
