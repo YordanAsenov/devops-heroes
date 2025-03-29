@@ -41,9 +41,9 @@ nginx['ssl_ciphers'] = "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA25
 registry['enable'] = false
 gitlab_rails['registry_enabled'] = true
 gitlab_rails['registry_host'] = "registry.devops-heroes.com"
-gitlab_rails['registry_port'] = 443
+gitlab_rails['registry_port'] = 5000
 gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
-gitlab_rails['registry_api_url'] = "https://registry.devops-heroes.com"
+gitlab_rails['registry_api_url'] = "http://registry.devops-heroes.com:5000"
 gitlab_rails['registry_key_path'] = "/etc/gitlab/ssl/private/gitlab.devops-heroes.com.key"
 gitlab_rails['registry_issuer'] = "gitlab-issuer"
 
@@ -988,7 +988,7 @@ gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_pass
 ### Settings used by GitLab application
 gitlab_rails['registry_enabled'] = true
 gitlab_rails['registry_host'] = "registry.devops-heroes.com"
-gitlab_rails['registry_port'] = "443"
+gitlab_rails['registry_port'] = "5000"
 gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
 
 # Notification secret, it's used to authenticate notification requests to GitLab application
@@ -998,7 +998,7 @@ gitlab_rails['registry_notification_secret'] = File.read('/run/secrets/registry_
 
 ###! **Do not change the following 3 settings unless you know what you are
 ###!   doing**
-gitlab_rails['registry_api_url'] = "https://registry.devops-heroes.com"
+gitlab_rails['registry_api_url'] = "http://registry.devops-heroes.com:5000"
 gitlab_rails['registry_key_path'] = "/etc/gitlab/ssl/private/registry.devops-heroes.com.key"
 gitlab_rails['registry_issuer'] = "gitlab-issuer"
 
