@@ -105,6 +105,8 @@ services:
   container_registry:
     image: registry:2.8.3
     container_name: container_registry
+    ports:
+      - "5000:5000"
     volumes:
       - container-registry-data:/var/lib/registry
       - certificates:/certs

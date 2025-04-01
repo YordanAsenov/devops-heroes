@@ -31,22 +31,6 @@
 ##! https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
 external_url 'https://gitlab.devops-heroes.com/'
 
-# SSL Configuration
-nginx['ssl_certificate'] = "/etc/gitlab/ssl/certificates/gitlab.devops-heroes.com.full-chain.crt"
-nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/private/gitlab.devops-heroes.com.key"
-nginx['ssl_protocols'] = "TLSv1.2 TLSv1.3"
-nginx['ssl_ciphers'] = "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384"
-
-# Disable internal registry and configure external registry
-registry['enable'] = false
-gitlab_rails['registry_enabled'] = true
-gitlab_rails['registry_host'] = "registry.devops-heroes.com"
-gitlab_rails['registry_port'] = 5000
-gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
-gitlab_rails['registry_api_url'] = "http://registry.devops-heroes.com:5000"
-gitlab_rails['registry_key_path'] = "/etc/gitlab/ssl/private/gitlab.devops-heroes.com.key"
-gitlab_rails['registry_issuer'] = "gitlab-issuer"
-
 ## Roles for multi-instance GitLab
 ##! The default is to have no roles enabled, which results in GitLab running as an all-in-one instance.
 ##! Options:
@@ -983,7 +967,7 @@ gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_pass
 ##! Docs: https://docs.gitlab.com/ee/administration/packages/container_registry.html
 ################################################################################
 
-# registry_external_url 'https://registry.devops-heroes.com'
+registry_external_url 'https://registry.devops-heroes.com'
 
 ### Settings used by GitLab application
 gitlab_rails['registry_enabled'] = true
