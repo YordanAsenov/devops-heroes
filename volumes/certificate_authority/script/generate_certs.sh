@@ -15,14 +15,16 @@ GITLAB_DOMAIN_NAME="gitlab.devops-heroes.com"
 GITLAB_CERT_KEY="$PRIVATE_DIR/$GITLAB_DOMAIN_NAME.key"
 GITLAB_CERT_CSR="$CSR_DIR/$GITLAB_DOMAIN_NAME.csr"
 GITLAB_CERT_CRT="$CERTS_DIR/$GITLAB_DOMAIN_NAME.crt"
+GITLAB_FULL_CHAIN_CERT_CRT="$CERTS_DIR/$GITLAB_DOMAIN_NAME.full-chain.crt"
 
 REGISTRY_DOMAIN_NAME="registry.devops-heroes.com"
 REGISTRY_CERT_KEY="$PRIVATE_DIR/$REGISTRY_DOMAIN_NAME.key"
 REGISTRY_CERT_CSR="$CSR_DIR/$REGISTRY_DOMAIN_NAME.csr"
 REGISTRY_CERT_CRT="$CERTS_DIR/$REGISTRY_DOMAIN_NAME.crt"
+REGISTRY_FULL_CHAIN_CERT_CRT="$CERTS_DIR/$REGISTRY_DOMAIN_NAME.full-chain.crt"
 
 # Check if certificates already exist
-if [ -f "$GITLAB_CERT_CRT" ] && [ -f "$REGISTRY_CERT_CRT" ]; then
+if [ -f "$GITLAB_CERT_CRT" ] && [ -f "$GITLAB_FULL_CHAIN_CERT_CRT" ] && [ -f "$REGISTRY_CERT_CRT" ] && [ -f "$REGISTRY_FULL_CHAIN_CERT_CRT" ]; then
   echo "Certificates already exist. Exiting."
   exit 0
 fi
@@ -90,6 +92,11 @@ openssl x509 \
   -extensions v3_registry
 
 sleep 1
+
+# --- Create full chain certificates ---
+echo "Creating full chain certificates"
+cat $GITLAB_CERT_CRT $CA_CRT > $GITLAB_FULL_CHAIN_CERT_CRT
+cat $REGISTRY_CERT_CRT $CA_CRT > $REGISTRY_FULL_CHAIN_CERT_CRT
 
 echo "Certificates generated in $CERTS_DIR:"
 ls -l "$CERTS_DIR"

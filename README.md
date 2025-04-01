@@ -40,7 +40,7 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
 
     > Username: root
     
-    > Password: found in `./volumes/gitlab/config/root_password.txt`
+    > Password: found in `./volumes/gitlab/secrets/root_password.txt`
 
 2. Create a new administrator user
 
@@ -134,6 +134,6 @@ This repository provides a ready-to-use docker-compose.yml for running a GitLab 
     volumes = [
         "/var/run/docker.sock:/var/run/docker.sock", 
         "/cache",
-        "/etc/gitlab-runner/certs"
+        "devops-heroes_certificates:/etc/gitlab-runner/certs:ro"
     ]
     ```

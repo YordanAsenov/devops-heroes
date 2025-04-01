@@ -1718,7 +1718,7 @@ nginx['ssl_client_certificate'] = "/etc/gitlab/trusted-certs/ca.crt"
 ##! if ssl_verify_client on, verification depth in the client certificates chain
 # nginx['ssl_verify_depth'] = "1"
 
-nginx['ssl_certificate'] = "/etc/gitlab/ssl/certificates/gitlab.devops-heroes.com.crt"
+nginx['ssl_certificate'] = "/etc/gitlab/ssl/certificates/gitlab.devops-heroes.com.full-chain.crt"
 nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/private/gitlab.devops-heroes.com.key"
 # nginx['ssl_ciphers'] = "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384"
 # nginx['ssl_prefer_server_ciphers'] = "off"
