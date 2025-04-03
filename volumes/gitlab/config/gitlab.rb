@@ -983,7 +983,7 @@ gitlab_rails['registry_notification_secret'] = File.read('/run/secrets/registry_
 ###! **Do not change the following 3 settings unless you know what you are
 ###!   doing**
 gitlab_rails['registry_api_url'] = "http://registry.devops-heroes.com:5000"
-gitlab_rails['registry_key_path'] = "/etc/gitlab/ssl/private/registry.devops-heroes.com.key"
+gitlab_rails['registry_key_path'] = "/etc/gitlab/ssl/gitlab-registry/gitlab-registry.key"
 gitlab_rails['registry_issuer'] = "gitlab-issuer"
 
 ### Settings used by Registry application

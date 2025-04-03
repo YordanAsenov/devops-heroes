@@ -42,11 +42,11 @@ entryPoints:
 tls:
   certificates:
     - certFile: /etc/traefik/certs/ca.crt
-      keyFile: /etc/traefik/private/ca.key
+      keyFile: /etc/traefik/private-keys/ca/ca.key
     - certFile: /etc/traefik/certs/gitlab.devops-heroes.com.crt
-      keyFile: /etc/traefik/private/gitlab.devops-heroes.com.key
+      keyFile: /etc/traefik/private-keys/gitlab/gitlab.devops-heroes.com.key
     - certFile: /etc/traefik/certs/registry.devops-heroes.com.crt
-      keyFile: /etc/traefik/private/registry.devops-heroes.com.key
+      keyFile: /etc/traefik/private-keys/registry/registry.devops-heroes.com.key
 # when testing certs, enable this so traefik doesn't use 
 # it's own self signed. By default if it can't find a matching
 # cert, it'll just create it's own which will cause cert warnings

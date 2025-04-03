@@ -30,7 +30,7 @@ auth:
     realm: https://gitlab.devops-heroes.com/jwt/auth
     service: container_registry
     issuer: gitlab-issuer
-    rootcertbundle: /certs/registry.devops-heroes.com.full-chain.crt
+    rootcertbundle: /gitlab-registry-private-key/gitlab-registry.key
 
 notifications:
   endpoints:

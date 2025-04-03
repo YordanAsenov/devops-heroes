@@ -6,8 +6,10 @@ volumes:
   gitlab-logs: {}
   gitlab-runner-config: {}
   gitlab-runner-home: {}
-  private-keys: {}
-  sign-requests: {}
+  certificate-authority-private-key: {}
+  gitlab-private-key: {}
+  gitlab-registry-private-key: {}
+  registry-private-key: {}
   certificates: {}
   container-registry-data: {}
 
@@ -26,8 +28,9 @@ services:
     image: alpine/openssl:3.3.3
     container_name: certificate_authority
     volumes:
-      - private-keys:/ca/private
-      - sign-requests:/ca/csr
+      - certificate-authority-private-key:/certificate-authority
+      - gitlab-private-key:/gitlab
+      - registry-private-key:/registry
       - certificates:/ca/certs
       - ./volumes/certificate_authority/config/openssl.cnf:/etc/ssl/openssl.cnf
       - ./volumes/certificate_authority/script/generate_certs.sh:/generate_certs.sh
@@ -43,7 +46,8 @@ services:
       - ./volumes/gitlab/config/gitlab.rb:/etc/gitlab/gitlab.rb
       - certificates:/etc/gitlab/trusted-certs
       - certificates:/etc/gitlab/ssl/certificates
-      - private-keys:/etc/gitlab/ssl/private
+      - gitlab-private-key:/etc/gitlab/ssl/private
+      - gitlab-registry-private-key:/etc/gitlab/ssl/gitlab-registry
     ports:
       - "39000:80"
       - "22:22"
@@ -93,7 +97,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./volumes/traefik/config/traefik.yaml:/etc/traefik/traefik.yaml:ro
-      - private-keys:/etc/traefik/private:ro
+      - certificate-authority-private-key:/etc/traefik/private-keys/ca:ro
+      - gitlab-private-key:/etc/traefik/private-keys/gitlab:ro
+      - registry-private-key:/etc/traefik/private-keys/registry:ro
       - certificates:/etc/traefik/certs:ro
     networks:
       - gitlab
@@ -101,7 +107,7 @@ services:
       certificate_authority:
         condition: service_completed_successfully
     restart: unless-stopped
-
+  
   container_registry:
     image: registry:2.8.3
     container_name: container_registry
@@ -110,6 +116,8 @@ services:
     volumes:
       - container-registry-data:/var/lib/registry
       - certificates:/certs
+      - registry-private-key:/registry-private-key
+      - gitlab-registry-private-key:/gitlab-registry-private-key
       - ./volumes/container_registry/config/config.yml:/etc/docker/registry/config.yml:ro
       - ./volumes/container_registry/script/boot.sh:/boot.sh
     secrets:
